@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="stock_dashboard_kanban_view" model="ir.ui.view">
+    	<field name="name">Stock Dashboard</field>
+        <field name="model">stock.dashboard</field>
+        <field name="arch" type="xml">
+        	<kanban>
+				<field name="model_types" id="ref" />  
+				<field name="is_all_product" />
+				<field name="product_ids" widget="many2many_checkboxes"/>
+        	</kanban>
+      	</field>
+	</record>
+	<record id="stock_dashboard_form_view" model="ir.ui.view">
+    	<field name="name">Stock Dashboard</field>
+        <field name="model">stock.dashboard</field>
+        <field name="arch" type="xml">
+        	<form>
+            	<field name="id"/>
+                <!-- <field name="name" id="name"/> -->
+				<field name="model_types" id="ref" />  
+				<field name="is_all_product" />
+				<field name="product_ids" widget="many2many_checkboxes"/>                 
+            </form>
+      	</field>
+	</record>
+	<record id="action_stock_dashboard" model="ir.actions.act_window">
+		<field name="name">Dashboard</field>
+        <field name="res_model">stock.dashboard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban, form</field>
+        <field name="view_id" ref="stock_dashboard_form_view" />
+        <!-- <field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click to create a new brand.
+			</p>
+		</field> -->
+  		<field name="view_mode">stock_dashboard_kanban_view</field>
+        <field name="context">{'stock_dashboard_kanban_view_view_ref' : 'stock_dashboard.stock_dashboard_kanban_view'}</field>
+	</record>
+    <!-- Menu Stock Dashbaord -->
+    <menuitem id="menu_stock_dashboard"
+  		name="Stock Dashboard"
+		action="action_stock_dashboard"
+        parent="stock.menu_stock_root"
+        sequence="10"/>
+    <data>
+        <template id="assets_backend" name="Stock assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/stock_dashboard/static/src/js/stock_dashboard.js"/>
+                
+                <link rel="stylesheet" href="/stock_dashboard/static/src/css/dashboard.css"/>
+                <!-- <link rel="stylesheet" href="/stock_dashboard/static/src/css/mdb.css"/>
+                <link rel="stylesheet" href="/stock_dashboard/static/src/css/mdb.min.css"/> -->
+                
+                <script type="text/javascript" src="/stock_dashboard/static/lib/charts/Chart.min.js"/>
+                <!-- <script type="text/javascript" src="/stock_dashboard/static/lib/charts/Chart.bundle.min.js"/>
+                Datatable scripts
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/datatables.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/dataTables.buttons.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/buttons.flash.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/buttons.html5.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/buttons.print.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/pdfmake.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/vfs_fonts.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/jszip.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/buttons.bootstrap.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/buttons.bootstrap4.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/dataTables/buttons.colVis.min.js"/>
+                Scripts to export html to pdf
+                <script type="text/javascript" src="/stock_dashboard/static/lib/jsPdf/jspdf.min.js"/>
+                <script type="text/javascript" src="/stock_dashboard/static/lib/jsPdf/jspdf.debug.js"/>
+                
+                <script type="text/javascript" src="/stock_dashboard/static/src/js/example.js"/>
+                Css scripts for dashboard view and table
+                <link rel="stylesheet" href="/stock_dashboard/static/lib/dataTables/datatables.min.css"/>
+                <link rel="stylesheet" href="/stock_dashboard/static/lib/dataTables/buttons.dataTables.min.css"/> -->
+            </xpath>
+        </template>
+    </data>
+</odoo>

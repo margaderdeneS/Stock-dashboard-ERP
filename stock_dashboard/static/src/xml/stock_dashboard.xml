@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="stock_dashboard.dashboard">
+        <style type="text/css" t-if="! widget.isFirefox">
+            .o_control_panel.o_breadcrumb_full, .oe_view_nocontent {
+                display: none;
+            }
+            tr: hover{background-color: #ddd; cursor: pointer;}
+        </style>
+        <div class="openerp oe_kanban_view stock_dash col-xs-12 col-md-12 col-lg-12 col-sm-8" style="padding-top: 20px;">
+        	<div class="main-content col-md-12">
+        		<div class="container">
+				    <div class='col-md-5'>
+				        <div class="form-group">
+				            <div class='input-group datetime'>
+				            	<span>Эхлэх огноо: </span>
+				                <input type='date' class="form-control datetimePicker" id='datetimePickerStart'/>
+				            </div>
+				        </div>
+				    </div>
+				    <div class='col-md-5'>
+				        <div class="form-group">
+				            <div class='input-group datetime'>
+				            	<span>Дуусах огноо: </span>
+				                <input type='date' class="form-control datetimePicker" id='datetimePickerTo'/>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+        		<div class="container-fluid">
+               		<div class="row">
+                       	<div class="panel col-md-8">
+                           	<div class="panel-heading">
+                               	<h3 class="panel-title">Диаграмууд</h3>
+                             	</div>
+                           	<div class="panel-body">
+                                 <canvas id="customChart" width="1000px" height="900px"/>
+                           	</div>
+                       	</div>
+                       	<div class="col-md-4" style="padding-top:50px;">
+                       		<div class="form-group row">
+		       					<label for="o_graph_selection">Графикын харагдах төрөл:</label>
+		        				<select class="form-control" id="o_graph_selection" name="widget.graph_types">
+				                    <option value='bar'>Дөрвөлжин диаграм</option>
+				                    <option value='pie'>Бялуу диаграм</option>
+				                    <option value='line'>Зураас диаграм</option>
+				                    <option value='radar'>Радар диаграм</option>
+				                    <option value='polar'>Туйлын диаграм</option>
+				                    <option value='doughnut'>Цагираг диаграм</option>
+				                    <option value='bubble'>Хөөс диаграм</option>
+				                </select>
+		       				</div>
+		       				<div class="form-group row">
+		       					<label for="o_graph_selection">Модел:</label>
+				                <select class="form-control" id="o_model_selection" name="widget.field_model_types"><!-- multiple="true" -->
+				                    <t t-foreach='widget.field_model_types.selection' t-as='select'>
+				                        <option t-att-value='select[0]'> 
+				                            <t t-esc='select[1]'/>
+				                        </option>
+				                    </t>
+				                </select>
+				            </div>
+				            <div class="form-group row">
+				            	<label for="o_graph_selection">Агуулгын төрөл:</label>
+				            	<select class="form-control" id="o_type_selection" name="widget.field_types" title="Type" string="Type">
+				                    <t t-foreach='widget.field_types.selection' t-as='select'>
+				                        <option t-att-value='select[0]'> 
+				                            <t t-esc='select[1]'/>
+				                        </option>
+				                    </t>
+				                </select>
+				                <select class="form-control" id="o_type_route_selection" name="widget.field_types" title="Type" string="Type">
+				                    <t t-foreach='widget.field_route_types.selection' t-as='select'>
+				                        <option t-att-value='select[0]'> 
+				                            <t t-esc='select[1]'/>
+				                        </option>
+				                    </t>
+				                </select>
+				            </div>
+				            <div class="form-group row">
+				            	<label for="o_graph_selection">Харьцуулах төрөл</label>
+				            	<select class="form-control" id="o_compare_type_selection" name="widget.field_types" title="Type" string="Type">
+				                    <t t-foreach='widget.field_compare_types.selection' t-as='select'>
+				                        <option t-att-value='select[0]'> 
+				                            <t t-esc='select[1]'/>
+				                        </option>
+				                    </t>
+				                </select>
+				            </div>
+				            <div class="form-group row">
+			        				<label for="o_graph_selection">Агуулгын хэмжээ:</label>
+			        				<select class="form-control" id="o_quantity_type_selection" name="widget.field_quantity_types" title="Type" string="Quantity">
+					                    <t t-foreach='widget.field_quantity_types.selection' t-as='select'>
+					                        <option t-att-value='select[0]'> 
+					                            <t t-esc='select[1]'/>
+					                        </option>
+					                    </t>
+					                </select>
+			        			</div>
+				            <div class="row">
+			        			<div class="form-group hide_input col-md-6 row">
+							      	<label for="input_quantity">Тоо:</label>
+							      	<input type="number" class="form-control" id="input_quantity" />
+							    </div>
+							    <button type="button" id="insert_button" name="show_info" class="btn btn-info hide_button col-md-6" style="margin: 22px 10px 0px 10px;">Харах</button>
+		        			</div>
+                       	</div>
+                  	</div>
+                  	<div class="col-md-12 hide_details table-wrapper">
+                       	<h4>Барааны дэлгэрэнгүй</h4>
+                        <table class="table table-bordered display nowrap" id="product_details" cellspacing="0" width="100%" >
+                            <thead>
+                                <tr class="info">
+                                	<th></th>
+                                    <th>Барааны нэр</th>
+                                    <th>Барааны код</th>
+                                    <th>Зарах үнэ</th>
+                                    <th>Дундаж үнэ</th>
+                                    <th>Нийт татваргүй үнэ</th>
+                                    <th>Татварын дүн</th>
+                                    <th>Нийт дүн</th>
+                                    <th>Нийт тоо ширхэг</th>
+                                    <th>Хөнгөлөлтийн дүн</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="info" t-foreach="widget.product_info.products" t-as="p">
+                                	<td><input type="checkbox" id="check_info"/></td>
+                                       <td><span t-esc="p['name']"/></td>
+                                       <td><span t-esc="p['default_code']"/></td>
+                                       <td><span t-esc="p['list_price']"/></td>
+                                       <td><span t-esc="p['avg_price']"/></td>
+                                       <td><span t-esc="p['no_tax_price']"/></td>
+                                       <td><span t-esc="p['tax_price']"/></td>
+                                       <td><span t-esc="p['price']"/></td>
+                                       <td><span t-esc="p['quantity']"/></td>
+                                       <td><span t-esc="p['discount']"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+					</div>
+					<!-- <div class="row">
+						<div class="col-md-4">
+                            <div class="dash-box dash-box-color-1">
+                                <div class="dash-box-icon">
+                                    <i class="fa fa-fw fa-calendar"/>
+                                </div>
+                                <div class="dash-box-body">
+                                    <span class="dash-box-count"><t t-esc="widget.product_info.pos_order_lines"/></span>
+                                    <span class="dash-box-title">Pos Order Lines</span>
+                                </div>
+
+                                <div class="dash-box-action pos_order_lines">
+                                    <button>More Info</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+					</div> -->
+          		</div>
+        	</div>
+        </div>
+        <!-- 
+        Model and action name tegwel huudas ruu shuug usrene
+        <td class="o_main" title="To Activities">
+                            <a href="#" class="o_dashboard_action" name="crm.crm_lead_action_activities" data-extra="today">
+                                <span class="o_highlight">
+                                    <t t-if="!show_demo">
+                                        <t t-esc="values['activity']['today']"/>
+                                    </t>
+                                    <t t-if="show_demo">
+                                        7
+                                    </t>
+                                </span> <br/>
+                                Next Actions
+                            </a>
+                        </td> -->
+    </t>
+</templates>

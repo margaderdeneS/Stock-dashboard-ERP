@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="view_template_property_form" model="ir.ui.view">
+	    <field name="name">product.template.stock.property.form.inherit</field>
+	    <field name="model">product.template</field>
+	    <field name="inherit_id" ref="product.product_template_form_view"/>
+	    <field name="arch" type="xml">
+	     <xpath expr="//form/sheet/notebook/page[@name='notes']/group[@name='description']" position='inside'>
+	         <separator string="History of product" colspan="4"/>
+	         <field name="product_history" colspan="4" nolabel="1" placeholder="This note will be saved product history."/>
+	     </xpath>
+	    </field>
+	</record>
+</odoo>
